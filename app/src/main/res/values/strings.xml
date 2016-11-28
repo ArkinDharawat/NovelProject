@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">NovelProject</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_number">Phone</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="prompt_code">Verification Code</string>
+    <string name="retrive_save">Saved Stories</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="action_verification">Verify</string>
+
+</resources>
