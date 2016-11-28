@@ -56,8 +56,8 @@ public class UserAddUpdate {
 
         Map<String, User> users = new HashMap<String, User>();
 
-        users.put("+1 123 456 7890",new User("Joe"));
-        users.put("+1 0123 456 7891",new User("Doe"));
+        users.put("+11234567890",new User("Joe"));
+        users.put("+11234567891",new User("Doe"));
 
         dbref.setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
@@ -97,7 +97,7 @@ public class UserAddUpdate {
         writeSignal.await(10, TimeUnit.SECONDS);
 
         //Update the database
-        DatabaseReference someUser = dbref.child("+1 0123 456 7891");
+        DatabaseReference someUser = dbref.child("+11234567891");
         Map<String,Object> userUpdates = new HashMap<String, Object>();
         ArrayList <String> a = new ArrayList<String>();
         a.add("123456789");

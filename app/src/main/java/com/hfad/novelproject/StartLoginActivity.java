@@ -8,10 +8,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,13 +52,39 @@ public class StartLoginActivity extends AppCompatActivity {
         phNumber = (EditText) findViewById(R.id.editText2);
         signUp = (Button) findViewById(R.id.button);
 
+
+
+        System.out.println(a);
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String number = phNumber.getText().toString();
+                final String number = phNumber.getText().toString();
                 //sending sms
                 if (number.substring(0, 2).equals("+1") && number.length() == 12) {
                     System.out.println("Legit number");
+
+                    dbref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            HashMap<String,User> userNumbers = (HashMap<String, User>) dataSnapshot.getValue();
+                            Set<String> keySet = userNumbers.keySet();
+                            for(String s:keySet) {
+                                if (s.equals(number)) {
+                                    Toast.makeText(getApplicationContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
+
+                                    Intent intent = new Intent(StartLoginActivity.this,StoriesActivity.class);
+                                    startActivity(intent);
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
                     sendVerification();
                     Intent intent = new Intent(StartLoginActivity.this,VerificationActivity.class);
                     intent.putExtra("verificationCode",VerificationCode);
@@ -72,7 +102,7 @@ public class StartLoginActivity extends AppCompatActivity {
 
     void sendVerification() {
         try {
-            post("http://b94392f0.ngrok.io/sms", new Callback() {
+            post("http://6711a518.ngrok.io/sms", new Callback() {
 
                 @Override
                 public void onFailure(Call call, IOException e) {
