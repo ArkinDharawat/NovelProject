@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.util.Log;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -17,6 +16,10 @@ import com.google.firebase.database.ValueEventListener;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -31,10 +34,9 @@ import static org.junit.Assert.assertEquals;
 
 
 @RunWith(AndroidJUnit4.class)
-public class ExampleInstrumentedTest {
+public class UserAddUpdate {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference mMatchmaker = database.getReference("message");
-    private DatabaseReference mMatchmaker1 = database.getReference("message/users");
+    private DatabaseReference dbref = database.getReference("users");
 
 
     @Test
@@ -47,26 +49,17 @@ public class ExampleInstrumentedTest {
 
     }
 
-    @Test
-    public void putStringInRealtimeDatabase() throws Exception {
-        final CountDownLatch writeSignal = new CountDownLatch(1);
-
-        mMatchmaker.setValue("exp").addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                writeSignal.countDown();
-            }
-        });
-        writeSignal.await(10, TimeUnit.SECONDS);
-    }
 
     @Test
     public void putInRealtimeDatabase() throws Exception {
         final CountDownLatch writeSignal = new CountDownLatch(1);
 
-        DatabaseReference dbref = mMatchmaker.child("users");
+        Map<String, User> users = new HashMap<String, User>();
 
-        dbref.child("user_1").setValue(new User("Lsdf","Lddsd")).addOnCompleteListener(new OnCompleteListener<Void>() {
+        users.put("+1 123 456 7890",new User("Joe"));
+        users.put("+1 0123 456 7891",new User("Doe"));
+
+        dbref.setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 writeSignal.countDown();
@@ -81,13 +74,18 @@ public class ExampleInstrumentedTest {
     public void readStringInRealtimeDatabase() throws Exception {
         final CountDownLatch writeSignal = new CountDownLatch(1);
 
-
-        mMatchmaker1.addValueEventListener(new ValueEventListener() {
+        dbref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                Log.v("Value",dataSnapshot.getValue(User.class).toString());
-                writeSignal.countDown();
+                HashMap<String,User> userNumbers = (HashMap<String, User>) dataSnapshot.getValue();
+                Set<String> keySet = userNumbers.keySet();
+                for (String s:keySet) {
+                    System.out.println("Key is" + userNumbers.get(s));
+
+                }
+
+
             }
 
             @Override
@@ -97,6 +95,15 @@ public class ExampleInstrumentedTest {
         });
 
         writeSignal.await(10, TimeUnit.SECONDS);
+
+        //Update the database
+        DatabaseReference someUser = dbref.child("+1 0123 456 7891");
+        Map<String,Object> userUpdates = new HashMap<String, Object>();
+        ArrayList <String> a = new ArrayList<String>();
+        a.add("123456789");
+        userUpdates.put("savedBooks",a);
+
+        someUser.updateChildren(userUpdates);
     }
 }
 

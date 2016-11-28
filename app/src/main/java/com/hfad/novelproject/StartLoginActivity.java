@@ -8,7 +8,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -28,11 +33,13 @@ public class StartLoginActivity extends AppCompatActivity {
     private EditText phNumber;
     private Button signUp;
     private String VerificationCode;
+    private Boolean type;
+    private Set<String> keySet = new HashSet<>();
+    String a = "";
 
-
-
-
-
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
+    private DatabaseReference dbref = database.getReference("users");
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
