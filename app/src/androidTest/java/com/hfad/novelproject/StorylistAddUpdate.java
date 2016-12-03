@@ -27,6 +27,16 @@ public class StorylistAddUpdate {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference dbref = database.getReference("Genre");
 
+    public static String RandomAlphaNumericString(int size){
+        String chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        String ret = "";
+        int length = chars.length();
+        for (int i = 0; i < size; i ++){
+            ret += chars.split("")[ (int) (Math.random() * (length - 1)) ];
+        }
+        return ret;
+    }
+
     @Test
     public void useAppContext() throws Exception {
         // Context of the app under test.
@@ -41,11 +51,22 @@ public class StorylistAddUpdate {
     public void putInRealtimeDatabase() throws Exception {
         final CountDownLatch writeSignal = new CountDownLatch(1);
 
+
+//        System.out.println("NUMBER " + RandomAlphaNumericString(11));
+
         Map<String, StoryItem> stories = new HashMap<String,StoryItem>();
 
-        stories.put("The Seventh Son",new StoryItem("horror","123456789"));
-        stories.put("Tale in the Servants",new StoryItem("comedy","1357911131"));
-        stories.put("Bare Sword",new StoryItem("action","2456789011"));
+        stories.put("The Seventh Son",new StoryItem("horror",RandomAlphaNumericString(11)));
+        stories.put("Tale in the Servants",new StoryItem("comedy",RandomAlphaNumericString(11)));
+        stories.put("Bare Sword",new StoryItem("action",RandomAlphaNumericString(11)));
+        stories.put("The Snows Sparks",new StoryItem("comedy",RandomAlphaNumericString(11)));
+        stories.put("The Flight's Force",new StoryItem("horror",RandomAlphaNumericString(11)));
+        stories.put("Whispering Door",new StoryItem("horror",RandomAlphaNumericString(11)));
+        stories.put("The Fallen Man",new StoryItem("fantasy",RandomAlphaNumericString(11)));
+        stories.put("The Silk of the Wave",new StoryItem("adventure",RandomAlphaNumericString(11)));
+        stories.put("The Dreams's Weeping",new StoryItem("fantasy",RandomAlphaNumericString(11)));
+        stories.put("The Absent Prince",new StoryItem("comedy",RandomAlphaNumericString(11)));
+
 
         dbref.setValue(stories).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

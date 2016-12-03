@@ -12,12 +12,12 @@ public class User {
 
     User(){
         name = "none";
-        savedBooks.add("no books");
+
     }
 
     User(String name) {
         this.name = name;
-        this.savedBooks.add("no books");
+
 
     }
 }

@@ -10,7 +10,12 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
         android:layout_marginStart="27dp"
-        android:layout_marginTop="31dp" />
+        android:layout_marginTop="31dp"
+        android:fontFamily="casual"
+        android:typeface="sans"
+        android:textStyle="normal|italic"
+        android:textAlignment="center"
+        android:textSize="24sp" />
 
     <TextView
         android:text="genre"
@@ -19,5 +24,7 @@
         android:layout_below="@+id/textView"
         android:layout_alignStart="@+id/textView"
         android:layout_marginTop="19dp"
-        android:id="@+id/textView2" />
+        android:id="@+id/textView2"
+        android:fontFamily="sans-serif-condensed"
+        android:typeface="serif" />
 </RelativeLayout>

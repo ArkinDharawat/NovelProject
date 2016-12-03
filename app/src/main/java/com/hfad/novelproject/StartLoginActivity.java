@@ -16,8 +16,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -28,6 +26,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 ;
+
 /**
  * A login screen that offers login via email/password.
  */
@@ -37,13 +36,10 @@ public class StartLoginActivity extends AppCompatActivity {
     private EditText phNumber;
     private Button signUp;
     private String VerificationCode;
-    private Boolean type;
-    private Set<String> keySet = new HashSet<>();
-    String a = "";
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference dbref = database.getReference("users");
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,29 +49,36 @@ public class StartLoginActivity extends AppCompatActivity {
         signUp = (Button) findViewById(R.id.button);
 
 
-
-        System.out.println(a);
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final String number = phNumber.getText().toString();
                 //sending sms
                 if (number.substring(0, 2).equals("+1") && number.length() == 12) {
-                    System.out.println("Legit number");
 
-                    dbref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    //Check if the number already exists
+                    // if it does start Story Activity
+
+                    dbref.child(number).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                        public void onDataChange(DataSnapshot snapshot) {
+                            if (snapshot.getValue() != null) {
+                                //user exists, start story activity
+                                Toast.makeText(getApplicationContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
+                                HashMap<String,String> userVals = (HashMap<String, String>) snapshot.getValue();
+                                System.out.println(userVals.get("name"));
 
-                            HashMap<String,User> userNumbers = (HashMap<String, User>) dataSnapshot.getValue();
-                            Set<String> keySet = userNumbers.keySet();
-                            for(String s:keySet) {
-                                if (s.equals(number)) {
-                                    Toast.makeText(getApplicationContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(StartLoginActivity.this, StoriesActivity.class);
+                                intent.putExtra("Username",userVals.get("name"));
+                                startActivity(intent);
+                            } else {
+                                //user does not exist, send sms
+                                sendVerification();
+                                Intent intent = new Intent(StartLoginActivity.this, VerificationActivity.class);
+                                intent.putExtra("verificationCode", VerificationCode);
+                                intent.putExtra("phoneNo", number);
+                                startActivity(intent);
 
-                                    Intent intent = new Intent(StartLoginActivity.this,StoriesActivity.class);
-                                    startActivity(intent);
-                                }
                             }
                         }
 
@@ -84,11 +87,6 @@ public class StartLoginActivity extends AppCompatActivity {
 
                         }
                     });
-
-                    sendVerification();
-                    Intent intent = new Intent(StartLoginActivity.this,VerificationActivity.class);
-                    intent.putExtra("verificationCode",VerificationCode);
-                    startActivity(intent);
 
                 } else {
                     Toast.makeText(getApplicationContext(), "Please Enter a Valid Number", Toast.LENGTH_SHORT).show();
@@ -100,9 +98,12 @@ public class StartLoginActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Send verification message
+     */
     void sendVerification() {
         try {
-            post("http://6711a518.ngrok.io/sms", new Callback() {
+            post("http://2c65cc33.ngrok.io/sms", new Callback() {
 
                 @Override
                 public void onFailure(Call call, IOException e) {
@@ -126,15 +127,23 @@ public class StartLoginActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * make POST request to ngrok server
+     *
+     * @param url
+     * @param callback
+     * @return
+     * @throws IOException
+     */
     Call post(String url, Callback callback) throws IOException {
         String phoneNumber = phNumber.getText().toString();
         VerificationCode = "";
-        for(int i = 0; i < 8;i+=2) {
+        for (int i = 0; i < 8; i += 2) {
             VerificationCode = VerificationCode + phoneNumber.substring(i + 2, i + 3);
         }
         RequestBody formBody = new FormBody.Builder()
                 .add("To", phoneNumber)
-                .add("Body",""+"\n\n" +" Your Verification Code is: "+VerificationCode)
+                .add("Body", "" + "\n\n" + " Your Verification Code is: " + VerificationCode)
                 .build();
         Request request = new Request.Builder()
                 .url(url)

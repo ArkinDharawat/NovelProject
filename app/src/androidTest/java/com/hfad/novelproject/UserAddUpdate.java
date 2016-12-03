@@ -80,11 +80,10 @@ public class UserAddUpdate {
 
                 HashMap<String,User> userNumbers = (HashMap<String, User>) dataSnapshot.getValue();
                 Set<String> keySet = userNumbers.keySet();
-                for (String s:keySet) {
-                    System.out.println("Key is" + userNumbers.get(s));
+                for (String s: keySet) {
+                    System.out.println("Key is"+s);
 
                 }
-
 
             }
 

@@ -23,11 +23,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".VerificationActivity" />
-        <activity android:name=".StoriesActivity" />
+
+        <activity
+            android:name=".VerificationActivity"
+            android:parentActivityName=".StartLoginActivity">
+        </activity>
+
+        <activity
+            android:name=".StoriesActivity"
+            android:parentActivityName=".StartLoginActivity"/>
         <activity android:name=".WritingActivity" />
-        <activity android:name=".ChatActivity" />
-        <activity android:name=".SavedStoriesActivity"></activity>
+        <activity android:name=".ChatActivity"
+            android:parentActivityName=".WritingActivity"/>
+        <activity android:name=".SavedStoriesActivity"
+            android:parentActivityName=".StoriesActivity"></activity>
     </application>
 
 </manifest>
