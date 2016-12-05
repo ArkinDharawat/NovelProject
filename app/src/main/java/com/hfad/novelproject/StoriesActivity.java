@@ -27,7 +27,7 @@ public class StoriesActivity extends AppCompatActivity {
     private ListView storiesList;
     private String userName;
     private String phoneNumber;
-    private ArrayList<HashMap<String,String>> titleGenre = new ArrayList<HashMap<String, String>>();
+    private ArrayList<HashMap<String, String>> titleGenre = new ArrayList<HashMap<String, String>>();
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference dbref = database.getReference("Genre");
 
@@ -35,7 +35,7 @@ public class StoriesActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
         savedInstanceState.putString("wasUser", userName);
-        savedInstanceState.putString("wasNumber",phoneNumber);
+        savedInstanceState.putString("wasNumber", phoneNumber);
     }
 
     @Override
@@ -59,15 +59,15 @@ public class StoriesActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot player : dataSnapshot.getChildren()) {
-                    HashMap<String,String> idGen = (HashMap<String, String>) player.getValue();
-                    HashMap<String,String> nameGen = new HashMap<String, String>();
-                    nameGen.put("title",player.getKey());
-                    nameGen.put("genre",idGen.get("genre"));
+                    HashMap<String, String> idGen = (HashMap<String, String>) player.getValue();
+                    HashMap<String, String> nameGen = new HashMap<String, String>();
+                    nameGen.put("title", player.getKey());
+                    nameGen.put("genre", idGen.get("genre"));
                     titleGenre.add(nameGen);
                 }
 
-                storyTitleDetailAdapter = new SimpleAdapter(getApplicationContext(),titleGenre,R.layout.story_detail,
-                        new String[]{"title","genre"},new int[]{R.id.textView,R.id.textView2});
+                storyTitleDetailAdapter = new SimpleAdapter(getApplicationContext(), titleGenre, R.layout.story_detail,
+                        new String[]{"title", "genre"}, new int[]{R.id.textView, R.id.textView2});
 
                 storiesList.setAdapter(storyTitleDetailAdapter);
 
@@ -102,32 +102,32 @@ public class StoriesActivity extends AppCompatActivity {
                 dbref.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        ArrayList<HashMap<String,String>> newSearchList = new ArrayList<HashMap<String, String>>();
+                        ArrayList<HashMap<String, String>> newSearchList = new ArrayList<HashMap<String, String>>();
 
                         for (DataSnapshot player : dataSnapshot.getChildren()) {
-                            HashMap<String,String> idGen = (HashMap<String, String>) player.getValue();
-                            HashMap<String,String> nameGen = new HashMap<String, String>();
+                            HashMap<String, String> idGen = (HashMap<String, String>) player.getValue();
+                            HashMap<String, String> nameGen = new HashMap<String, String>();
 
                             //search by genre
-                            if(searchQ.contains("g:")) {
-                                if(idGen.get("genre").contains(searchQ.substring(2))) {
-                                    nameGen.put("title",player.getKey());
-                                    nameGen.put("genre",idGen.get("genre"));
+                            if (searchQ.contains("g:")) {
+                                if (idGen.get("genre").contains(searchQ.substring(2))) {
+                                    nameGen.put("title", player.getKey());
+                                    nameGen.put("genre", idGen.get("genre"));
                                     newSearchList.add(nameGen);
                                 }
 
                             }
                             //search by title
-                             else if(player.getKey().contains(searchQ)) {
-                                nameGen.put("title",player.getKey());
-                                nameGen.put("genre",idGen.get("genre"));
+                            else if (player.getKey().contains(searchQ)) {
+                                nameGen.put("title", player.getKey());
+                                nameGen.put("genre", idGen.get("genre"));
                                 newSearchList.add(nameGen);
 
                             }
                         }
 
-                        storyTitleDetailAdapter = new SimpleAdapter(getApplicationContext(),newSearchList,R.layout.story_detail,
-                                new String[]{"title","genre"},new int[]{R.id.textView,R.id.textView2});
+                        storyTitleDetailAdapter = new SimpleAdapter(getApplicationContext(), newSearchList, R.layout.story_detail,
+                                new String[]{"title", "genre"}, new int[]{R.id.textView, R.id.textView2});
 
                         storiesList.setAdapter(storyTitleDetailAdapter);
 
@@ -140,87 +140,87 @@ public class StoriesActivity extends AppCompatActivity {
                 });
 
 
-
-
             }
         });
 
 
+        //go to writing
         storiesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                /**
-                 * t
-                 * @param adapterView
-                 * @param view
-                 * @param position
-                 * @param l
-                 */
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
+            /**
+             * t
+             * @param adapterView
+             * @param view
+             * @param position
+             * @param l
+             */
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
 //            System.out.println(searchBox.getText() + " and " + position);
 
-            dbref.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    final String searchQ = searchBox.getText().toString();
-                    ArrayList<HashMap<String,String>> newSearchList = new ArrayList<HashMap<String, String>>();
+                dbref.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        final String searchQ = searchBox.getText().toString();
+                        ArrayList<HashMap<String, String>> newSearchList = new ArrayList<HashMap<String, String>>();
 
-                    for (DataSnapshot player : dataSnapshot.getChildren()) {
-                        HashMap<String,String> idGen = (HashMap<String, String>) player.getValue();
-                        HashMap<String,String> nameGen = new HashMap<String, String>();
+                        for (DataSnapshot player : dataSnapshot.getChildren()) {
+                            HashMap<String, String> idGen = (HashMap<String, String>) player.getValue();
+                            HashMap<String, String> nameGen = new HashMap<String, String>();
 
-                        //search by genre
-                        if(searchQ.contains("g:")) {
-                            if(idGen.get("genre").contains(searchQ.substring(2))) {
-                                nameGen.put("title",player.getKey());
-                                //nameGen.put("genre",idGen.get("genre"));
-                                nameGen.put("id",idGen.get("storyID"));
-                                newSearchList.add(nameGen);
+                            //search by genre
+                            if (searchQ.contains("g:")) {
+                                if (idGen.get("genre").contains(searchQ.substring(2))) {
+                                    nameGen.put("title", player.getKey());
+                                    //nameGen.put("genre",idGen.get("genre"));
+                                    nameGen.put("id", idGen.get("storyID"));
+                                    newSearchList.add(nameGen);
+                                }
+
                             }
+                            //search by title
+                            else if (player.getKey().contains(searchQ)) {
+                                nameGen.put("title", player.getKey());
+                                //nameGen.put("genre",idGen.get("genre"));
+                                nameGen.put("id", idGen.get("storyID"));
+                                newSearchList.add(nameGen);
 
+                            }
                         }
-                        //search by title
-                        else if(player.getKey().contains(searchQ)) {
-                            nameGen.put("title",player.getKey());
-                            //nameGen.put("genre",idGen.get("genre"));
-                            nameGen.put("id",idGen.get("storyID"));
-                            newSearchList.add(nameGen);
 
-                        }
+                        // getting the title we need !!!
+                        Intent intent = new Intent(StoriesActivity.this, WritingActivity.class);
+                        intent.putExtra("userName", userName);
+                        intent.putExtra("id", newSearchList.get(position).get("id"));
+                        intent.putExtra("title", newSearchList.get(position).get("title"));
+                        intent.putExtra("Phone Number", phoneNumber);
+                        startActivity(intent);
+
                     }
 
-                    // getting the title we need !!!
-                    Intent intent = new Intent(StoriesActivity.this,WritingActivity.class);
-                    intent.putExtra("userName",userName);
-                    intent.putExtra("id",newSearchList.get(position).get("id"));
-                    intent.putExtra("title",newSearchList.get(position).get("title"));
-                    intent.putExtra("Phone Number",phoneNumber);
-                    startActivity(intent);
+                    @Override
+                    public void onCancelled(DatabaseError firebaseError) {
 
-                }
+                    }
+                });
 
-                @Override
-                public void onCancelled(DatabaseError firebaseError) {
-
-                }
-            });
-
-        }
-    });
+            }
+        });
+        // go to saved stories
         Button savedStories = (Button) findViewById(R.id.button3);
 
         savedStories.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                DatabaseReference userRef = database.getReference("users/"+phoneNumber+"/savedBooks");
+                DatabaseReference userRef = database.getReference("users/" + phoneNumber + "/savedBooks");
 
                 userRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         if (dataSnapshot.getValue() != null) {
-                            Intent intent = new Intent(StoriesActivity.this,SavedStoriesActivity.class);
-                            intent.putExtra("userName",userName);
-                            intent.putExtra("Phone Number",phoneNumber);
+                            Intent intent = new Intent(StoriesActivity.this, SavedStoriesActivity.class);
+                            intent.putExtra("userName", userName);
+                            intent.putExtra("Phone Number", phoneNumber);
                             startActivity(intent);
                         } else {
                             Toast.makeText(getApplicationContext(), "You got NO Saved Stories, mate", Toast.LENGTH_SHORT).show();

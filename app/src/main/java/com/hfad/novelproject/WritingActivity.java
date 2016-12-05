@@ -95,6 +95,7 @@ public class WritingActivity extends AppCompatActivity {
             }
         });
 
+        // save story
         Button saveToUser = (Button) findViewById(R.id.button5);
 
         saveToUser.setOnClickListener(new View.OnClickListener() {
@@ -135,6 +136,7 @@ public class WritingActivity extends AppCompatActivity {
                         userUpdate.put("savedBooks",newSavedBooks);
 
                         someUser.child(phoneNumber).updateChildren(userUpdate);
+                        Toast.makeText(getApplicationContext(), "Story Saved!", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -145,6 +147,7 @@ public class WritingActivity extends AppCompatActivity {
             }
         });
 
+        //go to chats
         Button toChat = (Button) findViewById(R.id.button6);
 
         toChat.setOnClickListener(new View.OnClickListener() {
