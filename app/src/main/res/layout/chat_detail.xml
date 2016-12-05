@@ -12,7 +12,8 @@
         android:fontFamily="cursive"
         android:typeface="sans"
         android:textAlignment="viewStart"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        android:textColor="@android:color/black" />
 
     <TextView
         android:text="TextView"
@@ -22,5 +23,6 @@
         android:fontFamily="sans-serif"
         android:typeface="sans"
         android:textAlignment="viewStart"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:textColor="@color/colorPrimary" />
 </LinearLayout>

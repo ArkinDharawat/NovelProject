@@ -156,7 +156,7 @@ public class StoriesActivity extends AppCompatActivity {
                  */
         @Override
         public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
-            System.out.println(searchBox.getText() + " and " + position);
+//            System.out.println(searchBox.getText() + " and " + position);
 
             dbref.addValueEventListener(new ValueEventListener() {
                 @Override

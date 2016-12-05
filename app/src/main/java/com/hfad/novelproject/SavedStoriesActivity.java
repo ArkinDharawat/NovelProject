@@ -37,7 +37,7 @@ public class SavedStoriesActivity extends AppCompatActivity {
         storiesList = (ListView) findViewById(R.id.saved_list);
         storyRef = database.getReference("Genre");
 
-        System.out.println(userName + phoneNumber);
+//        System.out.println(userName + phoneNumber);
 
         userDbRef = database.getReference("users/"+phoneNumber);
 
@@ -105,7 +105,7 @@ public class SavedStoriesActivity extends AppCompatActivity {
                         final HashMap<String,Object> aUser = (HashMap<String,Object>)dataSnapshot.getValue();
                         final ArrayList<String> savedBooks = (ArrayList<String>) aUser.get("savedBooks");
 
-                        System.out.println(savedBooks);
+//                        System.out.println(savedBooks);
 
                         storyRef = database.getReference("Genre");
 

@@ -3,6 +3,7 @@ package com.hfad.novelproject;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -82,11 +83,11 @@ public class WritingActivity extends AppCompatActivity {
                 } else {
 
                     TextView storyContent = (TextView) findViewById(R.id.textView3);
-                    String updateStroyText = storyContent.getText() + ". " + storyText.getText().toString();
-                    System.out.println("You entered this " + updateStroyText);
+                    String updateStoryText = storyContent.getText() + ". " + storyText.getText().toString();
+//                    System.out.println("You entered this " + updateStoryText);
 
                     HashMap<String,Object> updateStroy = new HashMap<String,Object>();
-                    updateStroy.put(storyId,updateStroyText);
+                    updateStroy.put(storyId,updateStoryText);
                     dbref.updateChildren(updateStroy);
                     storyText.setText("");
                 }
@@ -124,11 +125,11 @@ public class WritingActivity extends AppCompatActivity {
 
                         } catch (NullPointerException e) {
                             //Change this to log
-                            System.out.println("NULL POINTER EXCEPTION");
+                            Log.e(WritingActivity.this.getClass().getSimpleName(),"Null pointer exception");
                             newSavedBooks.add(storyId);
                         }
 
-                        System.out.println(newSavedBooks);
+//                        System.out.println(newSavedBooks);
 
                         HashMap<String,Object> userUpdate = new HashMap<String, Object>();
                         userUpdate.put("savedBooks",newSavedBooks);

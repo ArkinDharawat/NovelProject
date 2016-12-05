@@ -15,7 +15,8 @@
         android:typeface="sans"
         android:textStyle="normal|italic"
         android:textAlignment="center"
-        android:textSize="24sp" />
+        android:textSize="24sp"
+        android:textColor="@android:color/black" />
 
     <TextView
         android:text="genre"
@@ -26,5 +27,6 @@
         android:layout_marginTop="19dp"
         android:id="@+id/textView2"
         android:fontFamily="sans-serif-condensed"
-        android:typeface="serif" />
+        android:typeface="serif"
+        android:textColor="@android:color/darker_gray" />
 </RelativeLayout>

@@ -22,7 +22,6 @@ public class ChatActivity extends AppCompatActivity {
     private String userName;
     private String storyId;
     private String storyTitle;
-    private String phoneNumber;
     private SimpleAdapter chatListAdapter;
     private ListView chatMessages;
     private Button sendMessage;
@@ -43,7 +42,7 @@ public class ChatActivity extends AppCompatActivity {
 
         setTitle(storyTitle);
 
-        System.out.println(storyId);
+
 
         dbrefC.child(storyId).addValueEventListener(new ValueEventListener() {
             @Override

@@ -66,7 +66,7 @@ public class StartLoginActivity extends AppCompatActivity {
                                 //user exists, start story activity
                                 Toast.makeText(getApplicationContext(), "Welcome back!", Toast.LENGTH_SHORT).show();
                                 HashMap<String,String> userVals = (HashMap<String, String>) snapshot.getValue();
-                                System.out.println(userVals.get("name"));
+
 
                                 Intent intent = new Intent(StartLoginActivity.this, StoriesActivity.class);
                                 intent.putExtra("Username",userVals.get("name"));
@@ -104,7 +104,7 @@ public class StartLoginActivity extends AppCompatActivity {
      */
     void sendVerification() {
         try {
-            post("http://2c65cc33.ngrok.io/sms", new Callback() {
+            post("http://34adbdfb.ngrok.io/sms", new Callback() {
 
                 @Override
                 public void onFailure(Call call, IOException e) {
