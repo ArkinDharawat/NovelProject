@@ -31,7 +31,7 @@ public class VerificationActivity extends AppCompatActivity {
 
 
         final String verificationCode = (String) getIntent().getSerializableExtra("verificationCode");
-        final String phoneNumber = (String) getIntent().getSerializableExtra("phoneNo");
+        final String phoneNumber = (String) getIntent().getSerializableExtra("Phone Number");
 
         verifyCode = (Button) findViewById(R.id.verify_me__button);
         userCode = (EditText) findViewById(R.id.user_input);
@@ -52,6 +52,7 @@ public class VerificationActivity extends AppCompatActivity {
 
                     Intent intent = new Intent(VerificationActivity.this,StoriesActivity.class);
                     intent.putExtra("Username",userName.getText().toString());
+                    intent.putExtra("Phone Number",phoneNumber);
                     startActivity(intent);
                 }
                 else

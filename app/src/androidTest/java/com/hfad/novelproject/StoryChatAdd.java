@@ -14,6 +14,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -29,6 +30,7 @@ import static org.junit.Assert.assertEquals;
 public class StoryChatAdd {
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference dbref = database.getReference("Story");
+    private DatabaseReference dbrefC = database.getReference("Chat");
     private DatabaseReference dbrefG = database.getReference("Genre");
 
     @Test
@@ -102,6 +104,45 @@ public class StoryChatAdd {
 
         writeSignal.await(10, TimeUnit.SECONDS);
     }
+
+
+    @Test
+    public void putInsideRealtimeDatabase() throws Exception {
+        final CountDownLatch writeSignal = new CountDownLatch(1);
+
+        dbrefG.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                Object jlang = dataSnapshot.getValue();
+                HashMap<String,HashMap<String,String>> randomKeys = (HashMap<String,HashMap<String,String>>) jlang;
+                Map<String,ArrayList<ChatItem>> stories = new HashMap<>();
+
+                ChatItem chatLines = new ChatItem("Admin","This is the beginning of your very first group chat, so go ahead and express your ideas !");
+                ArrayList<ChatItem> chats = new ArrayList<ChatItem>();
+                chats.add(chatLines);
+                int i = 0;
+
+                Set<String> keySet = randomKeys.keySet();
+                for (String s: keySet) {
+                    stories.put(randomKeys.get(s).get("storyID"),chats);
+                    dbrefC.setValue(stories).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            writeSignal.countDown();
+                        }
+                    });
+                    i+=1;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        writeSignal.await(10, TimeUnit.SECONDS);
+    }
 }
-
-

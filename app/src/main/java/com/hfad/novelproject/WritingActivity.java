@@ -1,5 +1,6 @@
 package com.hfad.novelproject;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -20,18 +21,38 @@ import java.util.HashMap;
 public class WritingActivity extends AppCompatActivity {
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private Button sendText;
     private Button saveToUser;
     private EditText storyText;
+    private String userName;
+    private String storyId;
+    private String storyTitle;
+    private String phoneNumber;
+
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putString("wasUserName",userName);
+        savedInstanceState.putString("wasId", storyId);
+        savedInstanceState.putString("wasTitle",storyTitle );
+        savedInstanceState.putString("wasNumber",phoneNumber);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_writing);
 
-        final String userName = (String) getIntent().getSerializableExtra("userName");
-        final String storyId = (String) getIntent().getSerializableExtra("id");
-        final String storyTitle = (String) getIntent().getSerializableExtra("title");
+        userName = (String) getIntent().getSerializableExtra("userName");
+        storyId = (String) getIntent().getSerializableExtra("id");
+        storyTitle = (String) getIntent().getSerializableExtra("title");
+        phoneNumber = (String) getIntent().getSerializableExtra("Phone Number");
+
+        if (savedInstanceState != null) {
+            userName = savedInstanceState.getString("wasUserName");
+            storyId = savedInstanceState.getString("wasId");
+            storyTitle = savedInstanceState.getString("wasTitle");
+            phoneNumber = savedInstanceState.getString("wasNumber");
+        }
 
         setTitle(storyTitle);
         final DatabaseReference dbref = database.getReference("Story");
@@ -41,7 +62,7 @@ public class WritingActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 TextView stroyContent = (TextView) findViewById(R.id.textView3);
-                stroyContent.setText(dataSnapshot.getValue().toString());
+                stroyContent.setText((String)dataSnapshot.getValue());
             }
 
             @Override
@@ -50,7 +71,7 @@ public class WritingActivity extends AppCompatActivity {
             }
         });
 
-        sendText = (Button) findViewById(R.id.button2);
+        Button sendText = (Button) findViewById(R.id.button2);
         storyText = (EditText) findViewById(R.id.editText3);
 
         sendText.setOnClickListener(new View.OnClickListener() {
@@ -60,8 +81,8 @@ public class WritingActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "LoL, you did not enter any text", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    TextView stroyContent = (TextView) findViewById(R.id.textView3);
-                    String updateStroyText = stroyContent.getText() + ". " + storyText.getText().toString();
+                    TextView storyContent = (TextView) findViewById(R.id.textView3);
+                    String updateStroyText = storyContent.getText() + ". " + storyText.getText().toString();
                     System.out.println("You entered this " + updateStroyText);
 
                     HashMap<String,Object> updateStroy = new HashMap<String,Object>();
@@ -73,49 +94,69 @@ public class WritingActivity extends AppCompatActivity {
             }
         });
 
-        saveToUser = (Button) findViewById(R.id.button5);
+        Button saveToUser = (Button) findViewById(R.id.button5);
 
         saveToUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(storyText.getText().length() == 0) {
-                    Toast.makeText(getApplicationContext(), "LoL, you did not enter any text", Toast.LENGTH_SHORT).show();
-            } else {
-                     final DatabaseReference userRef = database.getReference("users");
-                     userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                         @Override
-                         public void onDataChange(DataSnapshot dataSnapshot) {
-                             ArrayList<String> newSavedBooks = new ArrayList<String>();
-                             String number = "";
+                final DatabaseReference someUser = database.getReference("users");
 
-                             HashMap<String,Object>  userData = (HashMap<String, Object>) dataSnapshot.getValue();
+                someUser.child(phoneNumber).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        HashMap<String,Object> userVals = (HashMap<String, Object>) dataSnapshot.getValue();
 
-                             for (String s : userData.keySet()){
-                                 HashMap<String,Object>  user = (HashMap<String,Object>) userData.get(s);
+                        ArrayList<String> newSavedBooks = new ArrayList<String>();
+                        try {
 
-                                 if(user.get("name").equals(userName)){
-                                     try {
-                                         newSavedBooks.addAll((ArrayList<String>)user.get("savedBooks"));
-                                     } catch (NullPointerException e) {
-                                         //change to log
-                                         System.out.println("NULL POINTER EXCEPTION !!!");
-                                     }
-                                     number = s;
-                                 }
-                             }
-                             newSavedBooks.add(storyId);
+                            boolean present = false;
+                            newSavedBooks.addAll((ArrayList<String>)userVals.get("savedBooks"));
 
+                            for(String s:newSavedBooks) {
+                                if(s.equals(storyId)){
+                                    present = true;
+                                    break;
+                                }
+                            }
 
+                            if (!present)
+                                newSavedBooks.add(storyId);
 
-                         @Override
-                         public void onCancelled(DatabaseError databaseError) {
+                        } catch (NullPointerException e) {
+                            //Change this to log
+                            System.out.println("NULL POINTER EXCEPTION");
+                            newSavedBooks.add(storyId);
+                        }
 
-                         }
-                     });
-                }
-        }});
+                        System.out.println(newSavedBooks);
 
+                        HashMap<String,Object> userUpdate = new HashMap<String, Object>();
+                        userUpdate.put("savedBooks",newSavedBooks);
 
+                        someUser.child(phoneNumber).updateChildren(userUpdate);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
+
+        Button toChat = (Button) findViewById(R.id.button6);
+
+        toChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(WritingActivity.this,ChatActivity.class);
+                intent.putExtra("title",storyTitle);
+                intent.putExtra("id",storyId);
+                intent.putExtra("userName",userName);
+                intent.putExtra("Phone Number",phoneNumber);
+                startActivity(intent);
+            }
+        });
 
     }
 }

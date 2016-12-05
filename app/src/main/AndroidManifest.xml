@@ -33,10 +33,8 @@
             android:name=".StoriesActivity"
             android:parentActivityName=".StartLoginActivity"/>
         <activity android:name=".WritingActivity" />
-        <activity android:name=".ChatActivity"
-            android:parentActivityName=".WritingActivity"/>
-        <activity android:name=".SavedStoriesActivity"
-            android:parentActivityName=".StoriesActivity"></activity>
+        <activity android:name=".ChatActivity" />
+        <activity android:name=".SavedStoriesActivity"></activity>
     </application>
 
 </manifest>

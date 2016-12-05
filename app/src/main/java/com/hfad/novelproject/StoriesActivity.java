@@ -7,11 +7,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,7 +26,7 @@ public class StoriesActivity extends AppCompatActivity {
     private SimpleAdapter storyTitleDetailAdapter;
     private ListView storiesList;
     private String userName;
-    private FirebaseListAdapter<Object> adap;
+    private String phoneNumber;
     private ArrayList<HashMap<String,String>> titleGenre = new ArrayList<HashMap<String, String>>();
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private DatabaseReference dbref = database.getReference("Genre");
@@ -33,9 +34,10 @@ public class StoriesActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
-        System.out.println("Saving activity");
         savedInstanceState.putString("wasUser", userName);
+        savedInstanceState.putString("wasNumber",phoneNumber);
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,8 +47,10 @@ public class StoriesActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             userName = savedInstanceState.getString("wasUser");
+            phoneNumber = savedInstanceState.getString("wasNumber");
         }
         userName = (String) getIntent().getSerializableExtra("Username");
+        phoneNumber = (String) getIntent().getSerializableExtra("Phone Number");
         setTitle("Welcome " + userName + " !");
 
 
@@ -185,11 +189,11 @@ public class StoriesActivity extends AppCompatActivity {
                     }
 
                     // getting the title we need !!!
-                    //INSERT INTENT HERE
                     Intent intent = new Intent(StoriesActivity.this,WritingActivity.class);
                     intent.putExtra("userName",userName);
                     intent.putExtra("id",newSearchList.get(position).get("id"));
                     intent.putExtra("title",newSearchList.get(position).get("title"));
+                    intent.putExtra("Phone Number",phoneNumber);
                     startActivity(intent);
 
                 }
@@ -202,8 +206,34 @@ public class StoriesActivity extends AppCompatActivity {
 
         }
     });
+        Button savedStories = (Button) findViewById(R.id.button3);
 
+        savedStories.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
+                DatabaseReference userRef = database.getReference("users/"+phoneNumber+"/savedBooks");
+
+                userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.getValue() != null) {
+                            Intent intent = new Intent(StoriesActivity.this,SavedStoriesActivity.class);
+                            intent.putExtra("userName",userName);
+                            intent.putExtra("Phone Number",phoneNumber);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "You got NO Saved Stories, mate", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+        });
 
     }
 }

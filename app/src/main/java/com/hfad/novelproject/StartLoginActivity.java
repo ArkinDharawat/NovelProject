@@ -70,13 +70,14 @@ public class StartLoginActivity extends AppCompatActivity {
 
                                 Intent intent = new Intent(StartLoginActivity.this, StoriesActivity.class);
                                 intent.putExtra("Username",userVals.get("name"));
+                                intent.putExtra("Phone Number",snapshot.getKey());
                                 startActivity(intent);
                             } else {
                                 //user does not exist, send sms
                                 sendVerification();
                                 Intent intent = new Intent(StartLoginActivity.this, VerificationActivity.class);
                                 intent.putExtra("verificationCode", VerificationCode);
-                                intent.putExtra("phoneNo", number);
+                                intent.putExtra("Phone Number", number);
                                 startActivity(intent);
 
                             }
