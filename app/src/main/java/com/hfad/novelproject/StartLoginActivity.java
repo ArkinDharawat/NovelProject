@@ -104,7 +104,7 @@ public class StartLoginActivity extends AppCompatActivity {
      */
     void sendVerification() {
         try {
-            post("http://ff1f617d.ngrok.io/sms", new Callback() {
+            post("ngrok-server-here/sms", new Callback() {
 
                 @Override
                 public void onFailure(Call call, IOException e) {
